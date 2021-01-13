@@ -9,6 +9,9 @@ import genresRouter from './api/genres';
 import bodyParser from 'body-parser';
 import usersRouter from './api/users';
 import loglevel from 'loglevel';
+import swaggerUi from 'swagger-ui-express'
+import specs from './swagger.json'
+
 
 dotenv.config();
 
@@ -41,13 +44,18 @@ app.use(session({
   saveUninitialized: true
 }));
 
-app.use(express.static('public'));
 //configure body-parser
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use(passport.initialize());
 app.use('/api/movies', passport.authenticate('jwt', {session: false}), moviesRouter);
 app.use('/api/genres', genresRouter);
+app.use(
+  "/",
+  swaggerUi.serve,
+  swaggerUi.setup(specs)
+);
+
 //Users router
 app.use('/api/users', usersRouter);
 app.use(errHandler);

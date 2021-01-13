@@ -1,0 +1,180 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+      "description": "TMDB api"
+    },
+    "tags": [
+      {
+        "name": "User",
+        "description": "User routes"
+      },
+      {
+        "name": "Movie",
+        "description": "Movies routes"
+      },
+      {
+        "name": "Genres",
+        "description": "Genres routes"
+      }
+    ],
+    "schemes": [
+      "https",
+      "http"
+    ],
+    "paths": {
+      "/api/users": {
+        "get": {
+          "tags": [
+            "User"
+          ],
+          "summary": "Get all the user list",
+          "description": "",
+          "produces": [
+            "application/json"
+          ]
+        }
+      },
+      "/api/users/{$id}": {
+        "put": {
+          "tags": [
+            "User"
+          ],
+          "summary": "Update user by id",
+          "description": "",
+          "produces": [
+            "application/json"
+          ],
+          "parameters": [
+            {
+              "description": "User id",
+              "required": true
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Valid id"
+            }
+          }
+        }
+      },
+      "/api/users?action=auth": {
+        "post": {
+          "tags": [
+            "User"
+          ],
+          "summary": "Post user data",
+          "description": "Auth",
+          "produces": [
+            "application/json"
+          ],
+          "parameters": [
+            {
+              "in": "body",
+              "name": "body",
+              "description": "User data",
+              "required": true
+            }
+          ],
+          "responses": {
+            "200": {
+              "sucess": true,
+              "token": "value"
+            }
+          }
+        }
+      },
+      "/api/users/{$username}/favourites": {
+        "post": {
+          "tags": [
+            "User"
+          ],
+          "summary": "add favourtie movie",
+          "description": "Auth",
+          "produces": [
+            "application/json"
+          ],
+          "parameters": [
+            {
+              "in": "body",
+              "name": "body",
+              "description": "movie",
+              "required": true
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "success"
+            }
+          }
+        }
+      },
+      "/api/users/${username}/favourites": {
+        "get": {
+          "tags": [
+            "User"
+          ],
+          "summary": "get favourtie movies",
+          "description": "Auth",
+          "produces": [
+            "application/json"
+          ],
+          "responses": {
+            "200": {
+              "description": "movie list"
+            }
+          }
+        }
+      },
+      "/api/movies": {
+        "get": {
+          "tags": [
+            "Movie"
+          ],
+          "summary": "Get movie lists",
+          "description": "Get route",
+          "produces": [
+            "application/json"
+          ],
+          "responses": {
+            "200": {
+              "description": "return movie list"
+            }
+          }
+        }
+      },
+      "/api/movies/${id}": {
+        "get": {
+          "tags": [
+            "Movie"
+          ],
+          "summary": "Get specfied movie",
+          "description": "Get route",
+          "produces": [
+            "application/json"
+          ],
+          "responses": {
+            "200": {
+              "description": "return specified movie"
+            }
+          }
+        }
+      },
+      "/api/genres/": {
+        "get": {
+          "tags": [
+            "Genres"
+          ],
+          "summary": "Get generes list",
+          "description": "Get route",
+          "produces": [
+            "application/json"
+          ],
+          "responses": {
+            "200": {
+              "description": "return generes list"
+            }
+          }
+        }
+      }
+    }
+  }
