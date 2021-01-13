@@ -91,7 +91,7 @@ router.post('/:userName/favourites', async (req, res, next) => {
 router.get('/:userName/favourites', (req, res, next) => {
   const userName = req.params.userName;
   User.findByUserName(userName).populate('favourites').then(
-    user => res.status(201).json(user.favourites)
+    user => res.status(200).json(user.favourites)
   ).catch(next);
 });
 
