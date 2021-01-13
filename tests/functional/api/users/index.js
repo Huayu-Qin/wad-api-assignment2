@@ -9,6 +9,7 @@ const expect = chai.expect;
 let db;
 //let api;
 let token;
+let specfiedUser;
 
 const users = [
   {
@@ -100,7 +101,38 @@ describe("Users endpoint", () => {
           expect(res.body.length).to.equal(3);
           let result = res.body.map((user) => user.username);
           expect(result).to.have.members(["user1", "user2", "user3"]);
+          specfiedUser = res.body[0]
         });
     });
   });
+
+  describe("PUT / ", () => {
+    it("should return a 200 status and the updated user", () => {
+      let username = "newName"
+      return request(api)
+        .put(`/api/users/${specfiedUser._id}`)
+        .send({
+          username
+        })
+        .expect(200)
+        .then((res) => {
+          request(api)
+          .get("/api/users")
+          .then((res) => {
+            expect(res).to.have.members(["user1", "user2", username]);
+          })
+        })
+    });
+  })
+
+  describe("Favourites / ", () => {
+    it("should return a 200 status and favourites list", () => {
+      return request(api)
+        .get(`/api/users/user1/favourites`)
+        .expect(200)
+        .then((res) => {  
+          expect(res.body.length).to.equal(0);
+        })
+    });
+  })
 });
