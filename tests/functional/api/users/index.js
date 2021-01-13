@@ -10,6 +10,7 @@ let db;
 //let api;
 let token;
 let specfiedUser;
+let movieId = 590706
 
 const users = [
   {
@@ -126,6 +127,17 @@ describe("Users endpoint", () => {
   })
 
   describe("Favourites / ", () => {
+    it("should return a 201 status and message", () => {
+      return request(api)
+        .post(`/api/users/user1/favourites`)
+        .send({
+          id: movieId
+        })
+        .expect(201)
+        .then((res) => {
+          expect(res.body.favourites.length).to.be.above(0)
+        })
+    });
     it("should return a 200 status and favourites list", () => {
       return request(api)
         .get(`/api/users/user1/favourites`)
