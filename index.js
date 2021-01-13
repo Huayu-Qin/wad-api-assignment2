@@ -50,17 +50,14 @@ app.use(bodyParser.urlencoded());
 app.use(passport.initialize());
 app.use('/api/movies', passport.authenticate('jwt', {session: false}), moviesRouter);
 app.use('/api/genres', genresRouter);
+//Users router
+app.use('/api/users', usersRouter);
+app.use(errHandler);
 app.use(
   "/",
   swaggerUi.serve,
   swaggerUi.setup(specs)
 );
-
-//Users router
-app.use('/api/users', usersRouter);
-app.use(errHandler);
-
-// app.use('/api-docs', swaggerui.serve, swaggerui.setup(swaggerDocument));
 
 let server = app.listen(port, () => {
   loglevel.info(`Server running at ${port}`);
