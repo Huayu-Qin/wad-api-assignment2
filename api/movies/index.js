@@ -26,12 +26,12 @@ router.get('/:id/reviews', (req, res, next) => {
   .catch((error) => next(error));
 });
 
-router.post('/', (req, res) => {
+router.post('/', async (req, res, next) => {
   let newMovie = req.body;
   if (newMovie && newMovie.title) {
     //Adds a random id if missing. 
     !newMovie.id ? newMovie.id = Math.round(Math.random() * 10000) : newMovie; 
-    moviesObject.movies.push(newMovie);
+    await movieModel.create(newMovie).catch(next);
     res.status(201).send(newMovie);
   } else {
     res.status(405).send({
@@ -42,35 +42,32 @@ router.post('/', (req, res) => {
 });
 
 
-router.put('/:id', (req, res) => {
-  const key = parseInt(req.params.id);
-  const updateMovie = req.body;
-  const index = moviesObject.movies.map((movie) => {
-    return movie.id;
-  }).indexOf(key);
-  if (index !== -1) {
-    !updateMovie.id ? updateMovie.id = key : updateMovie;
-    moviesObject.movies.splice(index, 1, updateMovie);
-    res.status(200).send(updateMovie);
-  } else {
-    res.status(404).send({
-      message: 'Unable to find Movie',
-      status: 404
-    });
-  }
-});
+// router.put('/:id', (req, res) => {
+//   const key = parseInt(req.params.id);
+//   const updateMovie = req.body;
+//   const index = moviesObject.movies.map((movie) => {
+//     return movie.id;
+//   }).indexOf(key);
+//   if (index !== -1) {
+//     !updateMovie.id ? updateMovie.id = key : updateMovie;
+//     moviesObject.movies.splice(index, 1, updateMovie);
+//     res.status(200).send(updateMovie);
+//   } else {
+//     res.status(404).send({
+//       message: 'Unable to find Movie',
+//       status: 404
+//     });
+//   }
+// });
 
 
-router.delete('/:id', (req, res) => {
-  const key =  parseInt(req.params.id);
-  const index = moviesObject.movies.map((movie)=>{
-return movie.id;
-}).indexOf(key);
- if (index > -1) {
-  moviesObject.movies.splice(index, 1);
-     res.status(200).send({message: `Deleted movie id: ${key}.`,status: 200});
+router.delete('/:id', (req, res, next) => {
+  const id =  parseInt(req.params.id);
+  const movie = await movieModel.findByMovieDBId(id);
+ if (movie) {
+  movieModel.deleteOne({id: id}).then(res.status(200).send("delete successfully")).catch(next);
  } else {
-   res.status(404).send({message: `Unable to find movie with id: ${key}.`, status: 404});
+   res.status(404).send({message: `Unable to find the specific movie to delete`});
    }
 });
 
