@@ -10,14 +10,23 @@ router.get('/', (req, res, next) => {
 
 router.get('/:id', (req, res, next) => {
   const id = parseInt(req.params.id);
-  if (movieModel.findByMovieDBId(id)) {
-    movieModel.findByMovieDBId(id)
-      .then(movie => res.status(200).send(movie))
-      .catch((error) => next(error));
-  } else {
-    res.status(404).send({ message: `Unable to find movie with id: ${id}.`, status: 404 });
-  }
+  movieModel.findByMovieDBId(id).then(movie => res.status(200).send(movie)).catch(next);
 });
+
+// router.get('/:id', (req, res, next) => {
+//   const id = parseInt(req.params.id);
+//   if (movieModel.findByMovieDBId(id)) {
+//     // getMovie(id)
+//     // .then((movie) => res.status(200).send(movie))
+//     // .catch((error) => next(error));
+//     movieModel.findByMovieDBId(id)
+//       .then(movie => res.status(200).send(movie))
+//       .catch((error) => next(error));
+//   } else {
+//     res.status(404).send({ message: `Unable to find movie with id: ${id}.`, status: 404 });
+//   }
+
+// });
 
 router.get('/:id/reviews', (req, res, next) => {
   const id = parseInt(req.params.id);

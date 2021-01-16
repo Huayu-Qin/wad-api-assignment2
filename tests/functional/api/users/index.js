@@ -10,7 +10,7 @@ let db;
 //let api;
 let token;
 let specfiedUser;
-let movieId = 590706
+let movieId = 635780
 
 const users = [
   {
@@ -30,6 +30,7 @@ describe("Users endpoint", () => {
       useUnifiedTopology: true,
     });
     db = mongoose.connection;
+    // api.request("../../../../index")
     request(api)
       .post("/api/users")
       .send({
@@ -38,7 +39,7 @@ describe("Users endpoint", () => {
       })
       .end((err, res) => {
         token = res.body.token;
-        console.log(token)
+        // console.log(token)
         done();
       });
   });
@@ -64,7 +65,7 @@ describe("Users endpoint", () => {
     delete require.cache[require.resolve("../../../../index")];
   });
   describe("GET /users ", () => {
-    it("should return the 2 users and a status 200", (done) => {
+    it("should return the users correctly and a status 200", (done) => {
       request(api)
         .get("/api/users")
         .set("Accept", "application/json")
@@ -80,14 +81,33 @@ describe("Users endpoint", () => {
     });
   });
 
+  // describe("PUT / ", () => {
+  //   it("should show the updated user and  a 201 status ", () => {
+  //     let username = "newName"
+  //     return request(api)
+  //       .put(`/api/users/${specfiedUser._id}`)
+  //       .send({
+  //         username
+  //       })
+  //       .expect(201)
+  //       .then((res) => {
+  //         request(api)
+  //           .get("/api/users")
+  //           .then((res) => {
+  //             expect(res).to.have.members(["user1", "user2", username]);
+  //           })
+  //       })
+  //   });
+  // })
+
   describe("POST / ", () => {
 
-    it("should return a 200 status and the confirmation message", () => {
+    it("should  show the confirmation message and the 201 status", () => {
       return request(api)
         .post("/api/users?action=register")
         .send({
-          username: "user3",
-          password: "test3",
+          username: "user4",
+          password: "test4",
         })
         .expect(201)
         .expect({ code: 201, msg: 'Created new user Successfully.' });
@@ -99,37 +119,29 @@ describe("Users endpoint", () => {
         .expect("Content-Type", /json/)
         .expect(200)
         .then((res) => {
-          expect(res.body).to.be.a("array");
           expect(res.body.length).to.equal(3);
           let result = res.body.map((user) => user.username);
-          expect(result).to.have.members(["user1", "user2", "user3"]);
+          expect(res.body).to.be.a("array");
+          expect(result).to.have.members(["user1", "user2", "user4"]);
+
           specfiedUser = res.body[0]
         });
     });
-    
+
   });
 
-  describe("PUT / ", () => {
-    it("should return a 200 status and the updated user", () => {
-      let username = "newName"
-      return request(api)
-        .put(`/api/users/${specfiedUser._id}`)
-        .send({
-          username
-        })
-        .expect(200)
-        .then((res) => {
-          request(api)
-          .get("/api/users")
-          .then((res) => {
-            expect(res).to.have.members(["user1", "user2", username]);
-          })
-        })
-    });
-  })
 
-  describe("Favourites / ", () => {
-    it("should return a 201 status and message", () => {
+  describe("Favourites Movies / ", () => {
+    //   it("should return the favourites list and a 201 status", () => {
+    //     return request(api)
+    //       .get(`/api/users/user1/favourites`)
+    //       .expect(201)
+    //       .then((res) => {
+    //         expect(res.body.length).to.equal(0);
+    //       })
+    //   });
+    // })
+    it("should return a messgae and 201 status", () => {
       return request(api)
         .post(`/api/users/user1/favourites`)
         .send({
@@ -140,13 +152,5 @@ describe("Users endpoint", () => {
           expect(res.body.favourites.length).to.be.above(0)
         })
     });
-    it("should return a 200 status and favourites list", () => {
-      return request(api)
-        .get(`/api/users/user1/favourites`)
-        .expect(200)
-        .then((res) => {  
-          expect(res.body.length).to.equal(0);
-        })
-    });
-  })
+  });
 });

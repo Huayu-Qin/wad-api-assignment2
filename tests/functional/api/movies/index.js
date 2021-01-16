@@ -5,8 +5,9 @@ import api from "../../../../index";
 const expect = chai.expect;
 
 let token;
+//let api;
 
-const sampleMovie = {
+const testMovie = {
   id: 729648,
   title: "The Dalton Gang",
 };
@@ -48,14 +49,14 @@ const sampleMovie = {
 
 
 describe("Movies endpoint", function () {
-
   this.timeout(10000);
   before((done) => {
     setTimeout(() => {
       done();
     }, 5000);
   });
-  before((done) => {
+    before((done) => {
+      //api = require("../../../../index");
     request(api)
       .post("/api/users")
       .send({
@@ -64,7 +65,6 @@ describe("Movies endpoint", function () {
       })
       .end((err, res) => {
         token = res.body.token;
-
         done();
       });
   });
@@ -93,25 +93,22 @@ describe("Movies endpoint", function () {
     describe("when the id is valid", () => {
       it("should return the matching movie", () => {
         return request(api)
-          .get(`/api/movies/${sampleMovie.id}`)
+          .get(`/api/movies/${testMovie.id}`)
           .set("Accept", "application/json")
           .set("Authorization", token)
-          .expect("Content-Type", /json/)
           .expect(200)
           .then((res) => {
-            expect(res.body).to.have.property("title", sampleMovie.title);
+            expect(res.body).to.have.property("title", testMovie.title);
           });
       });
     });
     describe("when the id is invalid", () => {
-      it("should return en array", () => {
+      it("should return en empty array and told you requested could not be found", () => {
         return request(api)
           .get(`/api/movies/9999`)
           .set("Accept", "application/json")
           .set("Authorization", token)
-          .expect({
-
-          });
+          .expect({});
       });
     });
   });
@@ -125,10 +122,10 @@ describe("Movies endpoint", function () {
         .send({
           title: "Fatman"
         })
-        .expect(201)
         .then((res) => {
-          expect(res.body).to.have.property("id");
           expect(res.body).to.have.property("title", "Fatman");
+          expect(res.body).to.have.property("id")
+          expect(201)
         });
     });
   });

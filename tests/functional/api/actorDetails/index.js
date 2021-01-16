@@ -74,9 +74,7 @@ describe("ActorDetails endpoint", function () {
             .get(`/api/actors/9999`)
             .set("Accept", "application/json")
             .set("Authorization", token)
-            .expect({
-              
-          });
+            .expect({});
         });
       });
     });

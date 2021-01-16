@@ -12,6 +12,21 @@ router.get('/:id', (req, res, next) => {
   
 });
 
+router.post('/', async (req, res, next) => {
+    let newMovie = req.body;
+    if (newMovie && newMovie.title) {
+      //Adds a random id if missing. 
+      !newMovie.id ? newMovie.id = Math.round(Math.random() * 10000) : newMovie;
+      await movieModel.create(newMovie).catch(next);
+      res.status(201).send(newMovie);
+    } else {
+      res.status(405).send({
+        message: "Invalid Movie Data",
+        status: 405
+      });
+    }
+  });
+
 
 
 export default router;
