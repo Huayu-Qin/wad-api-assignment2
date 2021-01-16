@@ -59,4 +59,3 @@ export async function loadActors() {
     console.err(`failed to load actors data: ${err}`);
   }
 }
-
