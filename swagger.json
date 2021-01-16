@@ -1,180 +1,426 @@
 {
-    "openapi": "3.0.0",
-    "info": {
-      "description": "TMDB api"
+  "swagger": "2.0.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Movie API"
+  },
+  "host": "wad-api.herokuapp.com",
+  "basepath": "/",
+  "tags": [
+    {
+      "name": "Movies",
+      "description": "Movie APIs"
     },
-    "tags": [
-      {
-        "name": "User",
-        "description": "User routes"
-      },
-      {
-        "name": "Movie",
-        "description": "Movies routes"
-      },
-      {
-        "name": "Genres",
-        "description": "Genres routes"
+    {
+      "name": "Users",
+      "description": "User APIs"
+    },
+    {
+      "name": "Actors",
+      "description": "Actor APIs"
+    }
+  ],
+  "securityDefinitions": {
+    "Authorization": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header"
+    }
+  },
+  "schemas": [
+    "http"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/api/movies": {
+      "get": {
+        "tags": [
+          "Movies"
+        ],
+        "summary": "get movies",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Movies"
+            }
+          }
+        }
       }
-    ],
-    "schemes": [
-      "https",
-      "http"
-    ],
-    "paths": {
-      "/api/users": {
-        "get": {
-          "tags": [
-            "User"
-          ],
-          "summary": "Get all the user list",
-          "description": "",
-          "produces": [
-            "application/json"
-          ]
-        }
-      },
-      "/api/users/{$id}": {
-        "put": {
-          "tags": [
-            "User"
-          ],
-          "summary": "Update user by id",
-          "description": "",
-          "produces": [
-            "application/json"
-          ],
-          "parameters": [
-            {
-              "description": "User id",
-              "required": true
+    },
+    "/api/movies/{id}": {
+      "get": {
+        "tags": [
+          "Movies"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "movieid",
+            "required": "true",
+            "type": "string"
+          }
+        ],
+        "summary": "get a movie",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Movie"
             }
-          ],
-          "responses": {
-            "200": {
-              "description": "Valid id"
+          },
+          "500": {
+            "description": "Error"
+          }
+        }
+      }
+    },
+    "/api/movies/{id}/reviews": {
+      "get": {
+        "tags": [
+          "Movies"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "movieid",
+            "required": "true",
+            "type": "string"
+          }
+        ],
+        "summary": "get a movie",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Movie"
+            }
+          },
+          "500": {
+            "description": "Error"
+          }
+        }
+      }
+    },
+    "/api/users": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get all users in system",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Users"
             }
           }
         }
       },
-      "/api/users?action=auth": {
-        "post": {
-          "tags": [
-            "User"
-          ],
-          "summary": "Post user data",
-          "description": "Auth",
-          "produces": [
-            "application/json"
-          ],
-          "parameters": [
-            {
-              "in": "body",
-              "name": "body",
-              "description": "User data",
-              "required": true
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "parameters": [
+          {
+            "name": "action",
+            "in": "query",
+            "description": "register or login",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "username and password",
+            "schema": {
+              "$ref": "#/definitions/UserAuth"
             }
-          ],
-          "responses": {
-            "200": {
-              "sucess": true,
-              "token": "value"
+          }
+        ],
+        "summary": "auth in the system",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/AuthSuccess"
             }
+          },
+          "201": {
+            "description": "Successful"
+          }
+        }
+      }
+    },
+    "/api/users/{userName}/favourites": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "parameters": [
+          {
+            "name": "userName",
+            "in": "path",
+            "description": "The user's name",
+            "required": "true",
+            "type": "string"
+          }
+        ],
+        "summary": "get user's favors",
+        "responses": {
+          "201": {
+            "description": "id"
+          },
+          "500": {
+            "description": "Error"
           }
         }
       },
-      "/api/users/{$username}/favourites": {
-        "post": {
-          "tags": [
-            "User"
-          ],
-          "summary": "add favourtie movie",
-          "description": "Auth",
-          "produces": [
-            "application/json"
-          ],
-          "parameters": [
-            {
-              "in": "body",
-              "name": "body",
-              "description": "movie",
-              "required": true
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "success"
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "userName",
+            "in": "path",
+            "description": "name",
+            "required": "true",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "movieId",
+            "schema": {
+              "$ref": "#/definitions/MovieId"
             }
           }
-        }
-      },
-      "/api/users/${username}/favourites": {
-        "get": {
-          "tags": [
-            "User"
-          ],
-          "summary": "get favourtie movies",
-          "description": "Auth",
-          "produces": [
-            "application/json"
-          ],
-          "responses": {
-            "200": {
-              "description": "movie list"
-            }
+        ],
+        "summary": "add favorites",
+        "responses": {
+          "401": {
+            "description": "added"
+          },
+          "201": {
+            "description": "Success"
+          },
+          "500": {
+            "description": "Error"
           }
         }
-      },
-      "/api/movies": {
-        "get": {
-          "tags": [
-            "Movie"
-          ],
-          "summary": "Get movie lists",
-          "description": "Get route",
-          "produces": [
-            "application/json"
-          ],
-          "responses": {
-            "200": {
-              "description": "return movie list"
+      }
+    },
+    "/api/users/{id}": {
+      "put": {
+        "tags": [
+          "Users"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id",
+            "required": "true",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "user",
+            "schema": {
+              "$ref": "#/definitions/User"
             }
           }
-        }
-      },
-      "/api/movies/${id}": {
-        "get": {
-          "tags": [
-            "Movie"
-          ],
-          "summary": "Get specfied movie",
-          "description": "Get route",
-          "produces": [
-            "application/json"
-          ],
-          "responses": {
-            "200": {
-              "description": "return specified movie"
+        ],
+        "summary": "change user",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/User"
             }
+          },
+          "500": {
+            "description": "Error"
           }
         }
-      },
-      "/api/genres/": {
-        "get": {
-          "tags": [
-            "Genres"
-          ],
-          "summary": "Get generes list",
-          "description": "Get route",
-          "produces": [
-            "application/json"
-          ],
-          "responses": {
-            "200": {
-              "description": "return generes list"
+      }
+    },
+    "/api/actors": {
+      "get": {
+        "tags": [
+          "Actors"
+        ],
+        "summary": "get actors",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/Actors"
             }
+          },
+          "500": {
+            "description": "Error"
+          }
+        }
+      }
+    },
+    "/api/actors/{id}": {
+      "get": {
+        "tags": [
+          "Actors"
+        ],
+        "summary": "get a actors",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id",
+            "required": "true",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/Actor"
+            }
+          },
+          "500": {
+            "description": "Error"
           }
         }
       }
     }
+  },
+  "definitions": {
+    "Movie": {
+      "properties": {
+        "adult": {
+          "type": "boolean"
+        },
+        "backdrop_path": {
+          "type": "string"
+        },
+        "genres_ids": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          }
+        },
+        "original_language": {
+          "type": "string"
+        },
+        "original_title": {
+          "type": "string"
+        },
+        "overview": {
+          "type": "string"
+        },
+        "popularity": {
+          "type": "number"
+        },
+        "poster_path": {
+          "type": "string"
+        },
+        "release_date": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "video": {
+          "type": "boolean"
+        },
+        "vote_average": {
+          "type": "boolean"
+        },
+        "vote_count": {
+          "type": "integer"
+        }
+      }
+    },
+    "Movies": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Movie"
+      }
+    },
+    "User": {
+      "properties": {
+        "username": {
+          "type": "string",
+          "uniqueItems": "true"
+        },
+        "password": {
+          "type": "string"
+        },
+        "favourites": {
+          "type": "array",
+          "$ref": "#/definitions/Movie"
+        }
+      }
+    },
+    "Users": {
+      "type": "array",
+      "$ref": "#/definitions/User"
+    },
+    "Actor": {
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "gender": {
+          "type": "number"
+        },
+        "adult": {
+          "type": "boolean"
+        },
+        "id": {
+          "type": "number"
+        },
+        "biography": {
+          "type": "string"
+        },
+        "also_known_as": {
+          "type": "array",
+          "items":{
+            "type": "string"
+          }
+        },
+        "birthday": {
+          "type": "string"
+        },
+        "known_for_department": {
+          "type": "string"
+        },
+        "profile_path": {
+          "type": "string"
+        },
+        "imdb_id": {
+          "type": "string"
+        },
+        "place_of_birth": {
+          "type": "string"
+        }
+      }
+    },
+    "Actors": {
+      "type": "array",
+      "$ref": "#/definitions/Actor"
+    }
   }
+}
