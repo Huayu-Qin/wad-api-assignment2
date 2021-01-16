@@ -4,23 +4,16 @@ import api from "../../../../index";
 
 const expect = chai.expect;
 
-//let api;
 let token;
 
 const sampleMovie = {
-  id: 337401,
-  title: "Mulan",
+  id: 729648,
+  title: "The Dalton Gang",
 };
 
 describe("Movies endpoint", function (){
-  // beforeEach(() => {
-  //   try {
-  //     api = require("../../../../index");
-  //   } catch (err) {
-  //     console.error(`failed to Load user Data: ${err}`);
-  //   }
-  // });
-  this.timeout(6400);
+ 
+  this.timeout(10000);
   before((done) => {
     setTimeout(() => {
       done();
@@ -35,7 +28,7 @@ describe("Movies endpoint", function (){
       })
       .end((err, res) => {
         token = res.body.token;
-        console.log(token)
+
         done();
       });
   });

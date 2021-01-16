@@ -81,6 +81,7 @@ describe("Users endpoint", () => {
   });
 
   describe("POST / ", () => {
+
     it("should return a 200 status and the confirmation message", () => {
       return request(api)
         .post("/api/users?action=register")
@@ -105,6 +106,7 @@ describe("Users endpoint", () => {
           specfiedUser = res.body[0]
         });
     });
+    
   });
 
   describe("PUT / ", () => {
