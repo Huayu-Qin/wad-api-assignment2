@@ -15,22 +15,22 @@ router.get('/:id', (req, res, next) => {
       .then(movie => res.status(200).send(movie))
       .catch((error) => next(error));
   } else {
-    res.status(404).send({message: `Unable to find movie with id: ${id}.`, status: 404});
+    res.status(404).send({ message: `Unable to find movie with id: ${id}.`, status: 404 });
   }
 });
 
 router.get('/:id/reviews', (req, res, next) => {
   const id = parseInt(req.params.id);
   getMovieReviews(id)
-  .then(reviews => res.status(200).send(reviews))
-  .catch((error) => next(error));
+    .then(reviews => res.status(200).send(reviews))
+    .catch((error) => next(error));
 });
 
 router.post('/', async (req, res, next) => {
   let newMovie = req.body;
   if (newMovie && newMovie.title) {
     //Adds a random id if missing. 
-    !newMovie.id ? newMovie.id = Math.round(Math.random() * 10000) : newMovie; 
+    !newMovie.id ? newMovie.id = Math.round(Math.random() * 10000) : newMovie;
     await movieModel.create(newMovie).catch(next);
     res.status(201).send(newMovie);
   } else {
@@ -61,14 +61,17 @@ router.post('/', async (req, res, next) => {
 // });
 
 
-router.delete('/:id', (req, res, next) => {
-  const id =  parseInt(req.params.id);
-  const movie = await movieModel.findByMovieDBId(id);
- if (movie) {
-  movieModel.deleteOne({id: id}).then(res.status(200).send("delete successfully")).catch(next);
- } else {
-   res.status(404).send({message: `Unable to find the specific movie to delete`});
-   }
+router.delete('/:id', async (req, res, next) => {
+  const id = parseInt(req.params.id);
+  const movie = await movieModel.findBYMovieDBId(id);
+  if (!movie) {
+    res.status(404).send({ message: `Uable to find movie with id: ${id}.`, status: 404 }).catch(next);
+
+  } else {
+    await movieModel.deleteone({ "id": id });
+    res.status(200).send({ message: `Deleted movie id: ${id}. `, status: 200 });
+  }
+
 });
 
 
