@@ -8,8 +8,8 @@ let token;
 //let api;
 
 const testMovie = {
-  id: 720395,
-  title: "Let It Snow",
+  id: 311,
+  title: "Once Upon a Time in America",
 };
 
 describe("Movies endpoint", function () {
