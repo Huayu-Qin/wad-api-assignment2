@@ -6,7 +6,10 @@ import upcomingModel from '../api/upcoming/upcomingModel';
 import topRatedModel from '../api/topRated/topRatedModel';
 
 import { movies } from './movies.js';
-import { getActor, getActors, getUpcomingMovies,gettopRated} from '../api/tmdb-api';
+//import { topmovies } from './topmovies.js';
+import { upcoming } from './upcoming.js';
+//import { actors } from './actors.js';
+import { getActor, getActors, gettopRated} from '../api/tmdb-api';
 
 const users = [
   {
@@ -79,11 +82,11 @@ export async function loadActors() {
 export async function loadUpcomingMovies() {
   console.log('load upcomingmovies');
   try {
-    getUpcomingMovies().then(async res => {
+
       await upcomingModel.deleteMany();
-      await upcomingModel.collection.insertMany(res);
-      console.info(`${res.length} Upcomingmovies were successfully stored.`);
-    })
+      await upcomingModel.collection.insertMany(upcoming);
+      console.info(`${upcoming.length} Upcomingmovies were successfully stored.`);
+
   } catch (err) {
     console.error(`failed to Load upcomingmovie Data: ${err}`);
   }
