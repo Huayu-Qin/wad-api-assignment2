@@ -96,5 +96,42 @@ router.post('/:userName/favourites', async (req, res, next) => {
   }
 });
 
+//Get Movie Favourites
+router.get('/:userName/favourites', (req, res, next) => {
+  const userName = req.params.userName;
+  User.findByUserName(userName).populate('favourites').then(
+    user => res.status(201).json(user.favourites)
+  ).catch(next);
+});
+
+//Get Movie Watchlists
+router.get('/:userName/watchlist', (req, res, next) => {
+  const userName = req.params.userName;
+  User.findByUserName(userName).populate('watchlist').then(
+    user => res.status(201).json(user.watchlist)
+  ).catch(next);
+});
+//Add Movie to Watchlists
+router.post('/:userName/favourites', async (req, res, next) => {
+  try{
+    const newWatchList = req.body.id;
+    const userName = req.params.userName;
+    const movie = await movieModel.findByMovieDBId(newWatchList);
+    const user = await User.findByUserName(userName);
+    if (user.watchlists.indexOf(movie._id) == -1) {
+      await user.watchlists.push(movie._id);
+      await user.save();
+      res.status(201).json(user);
+
+  } else {
+      res.status(401).json({
+          code: 401,
+          msg: 'This movie has been added.'
+      });
+  }
+} catch (err) {
+  next(err)
+  }
+});
 
 export default router;

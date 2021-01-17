@@ -1,5 +1,5 @@
 import express from 'express';
-import { getMovieReviews } from '../tmdb-api';
+//import { getMovieReviews } from '../tmdb-api';
 import movieModel from './movieModel';
 
 const router = express.Router();
@@ -18,22 +18,6 @@ router.get('/:id', async (req, res, next)=>{
     res.status(404).send({message: `Unable to find movie with id: ${id}.`, status: 404});
   }
 });
-
-
-// router.get('/:id', (req, res, next) => {
-//   const id = parseInt(req.params.id);
-//   if (movieModel.findByMovieDBId(id)) {
-//     // getMovie(id)
-//     // .then((movie) => res.status(200).send(movie))
-//     // .catch((error) => next(error));
-//     movieModel.findByMovieDBId(id)
-//       .then(movie => res.status(200).send(movie))
-//       .catch((error) => next(error));
-//   } else {
-//     res.status(404).send({ message: `Unable to find movie with id: ${id}.`, status: 404 });
-//   }
-
-// });
 
 router.get('/:id/reviews', (req, res, next) => {
   const id = parseInt(req.params.id);
@@ -65,6 +49,31 @@ router.post('/', async (req, res, next) => {
   }
 });
 
+router.delete('/:id', async (req, res, next) => {
+  const id = parseInt(req.params.id);
+  const movie = await movieModel.findByMovieDBId(id);
+  if (movie) {
+    movieModel.deleteOne({ id: id }).then(res.status(200).send("delete successfully"))
+      .catch(next);
+  } else {
+    res.status(404).send("Not find the moive to delete");
+  }
+});
+
+// router.get('/:id', (req, res, next) => {
+//   const id = parseInt(req.params.id);
+//   if (movieModel.findByMovieDBId(id)) {
+//     // getMovie(id)
+//     // .then((movie) => res.status(200).send(movie))
+//     // .catch((error) => next(error));
+//     movieModel.findByMovieDBId(id)
+//       .then(movie => res.status(200).send(movie))
+//       .catch((error) => next(error));
+//   } else {
+//     res.status(404).send({ message: `Unable to find movie with id: ${id}.`, status: 404 });
+//   }
+
+// });
 
 // router.put('/:id', (req, res) => {
 //   const key = parseInt(req.params.id);
@@ -83,21 +92,5 @@ router.post('/', async (req, res, next) => {
 //     });
 //   }
 // });
-
-
-router.delete('/:id', async (req, res, next) => {
-  const id = parseInt(req.params.id);
-  const movie = await movieModel.findByMovieDBId(id);
-  if (movie) {
-    movieModel.deleteOne({ id: id }).then(res.status(200).send("delete successfully"))
-      .catch(next);
-  } else {
-    res.status(404).send("Not find the moive to delete");
-  }
-});
-
-
-
-
 
 export default router;
