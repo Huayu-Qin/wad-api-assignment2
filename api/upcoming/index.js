@@ -26,7 +26,7 @@ router.post('/', async (req, res, next) => {
     res.status(201).send(newMovie);
   } else {
     res.status(405).send({
-      message: "Invalid Movie Data",
+      message: "Invalid Movie Data.",
       status: 405
     });
   }
