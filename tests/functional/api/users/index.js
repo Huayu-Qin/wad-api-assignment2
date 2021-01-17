@@ -100,7 +100,7 @@ describe("Users endpoint", () => {
   //   });
   // })
 
-  describe("POST / ", () => {
+  describe("POST /users ", () => {
 
     it("should  show the confirmation message and the 201 status", () => {
       return request(api)
@@ -131,7 +131,7 @@ describe("Users endpoint", () => {
   });
 
 
-  describe("Favourites Movies / ", () => {
+  describe("Favourites Movies /user/favourites ", () => {
     //   it("should return the favourites list and a 201 status", () => {
     //     return request(api)
     //       .get(`/api/users/user1/favourites`)
