@@ -23,7 +23,7 @@ const users = [
   },
 ];
 
-describe("Users endpoint", () => {
+describe("Users endpoint /Users are registered ", () => {
   before((done) => {
     mongoose.connect(process.env.mongoDB, {
       useNewUrlParser: true,
@@ -102,7 +102,7 @@ describe("Users endpoint", () => {
 
   describe("POST /users ", () => {
 
-    it("should  show the confirmation message and the 201 status", () => {
+    it("should show the confirmation message and the 201 status", () => {
       return request(api)
         .post("/api/users?action=register")
         .send({
@@ -127,20 +127,11 @@ describe("Users endpoint", () => {
           specfiedUser = res.body[0]
         });
     });
-
   });
 
 
-  describe("Favourites Movies /user/favourites ", () => {
-    //   it("should return the favourites list and a 201 status", () => {
-    //     return request(api)
-    //       .get(`/api/users/user1/favourites`)
-    //       .expect(201)
-    //       .then((res) => {
-    //         expect(res.body.length).to.equal(0);
-    //       })
-    //   });
-    // })
+
+  describe("POST  /user/favourites ", () => {
     it("should return a messgae and 201 status", () => {
       return request(api)
         .post(`/api/users/user1/favourites`)
@@ -152,5 +143,206 @@ describe("Users endpoint", () => {
           expect(res.body.favourites.length).to.be.above(0)
         })
     });
-  });
+  })
+
+  describe("GET /users/username/favourites ", () => {
+    it("should return the  favourites movies and a status 201", () => {
+      request(api)
+        .get(`/api/users/user1/favourites`)
+        .set("Accept", "application/json")
+        .expect("Content-Type", /json/)
+        .expect(201)
+        .end((err, res) => {
+          expect(res.body).to.be.a("array");
+          expect(res.body.length).to.equal(0);
+        });
+    });
+  })
+  describe("POST /users/username/favourites ", () => {
+    it("should the vaild movie id and a status 201", () => {
+      request(api)
+        .post(`/api/users/user1/favourites`)
+        .send({
+          id: "635302"
+        })
+        .expect(201);
+    });
+
+    it("should return wrong movie id and a status 401 ", () => {
+      request(api)
+        .post(`/api/users/user1/favourites`)
+        .send({
+          id: "123456",
+        });
+      request(api)
+        .post(`/api/users/user1/favourites`)
+        .send({
+          id: "123456",
+        })
+        .expect(401);
+    });
+  })
+  describe("GET /users/username/favourites ", () => {
+    it("should return the  favourites movies and a status 201", () => {
+      request(api)
+        .get(`/api/users/user1/favourites`)
+        .set("Accept", "application/json")
+        .expect("Content-Type", /json/)
+        .expect(201)
+        .end((err, res) => {
+          expect(res.body).to.be.a("array");
+          expect(res.body.length).to.equal(0);
+        });
+    });
+  })
+  describe("POST /users/username/favourites ", () => {
+    it("should the vaild movie id and a status 201", () => {
+      request(api)
+        .post(`/api/users/user1/favourites`)
+        .send({
+          id: "635302"
+        })
+        .expect(201);
+    });
+
+    it("should return wrong movie id and a status 401 ", () => {
+      request(api)
+        .post(`/api/users/user1/favourites`)
+        .send({
+          id: "123456",
+        });
+      request(api)
+        .post(`/api/users/user1/favourites`)
+        .send({
+          id: "123456",
+        })
+        .expect(401);
+    });
+  })
+  describe("POST /users/username/watchlists ", () => {
+    it("should the vaild movie id and a status 201", () => {
+      request(api)
+        .post(`/api/users/user1/watchlists`)
+        .send({
+          id: "635302"
+        })
+        .expect(201);
+    });
+
+    it("should return wrong movie id and a status 401 ", () => {
+      request(api)
+        .post(`/api/users/user1/watchlists`)
+        .send({
+          id: "123456",
+        });
+      request(api)
+        .post(`/api/users/user1/watchlists`)
+        .send({
+          id: "123456",
+        })
+        .expect(401);
+    });
+  })
+
 });
+
+
+describe("Users endpoint /Users are not registered", () => {
+  before(() => {
+    mongoose.connect(process.env.mongoDB, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    db = mongoose.connection;
+  });
+
+  beforeEach(async () => {
+    try {
+      // api = require("../../../../index");
+      await User.deleteMany({});
+      await User.collection.insertMany(users);
+    } catch (err) {
+      console.error(`failed to Load user Data: ${err}`);
+    }
+  });
+  // afterEach(() => {
+  //   api.close();
+  //   delete require.cache[require.resolve("../../../../index")];
+  // });
+
+  describe("POST /users ", () => {
+    it("should show the wrong message for wrong password and a 401 status", () => {
+      request(api)
+        .post("/api/users?action=register")
+        .send({
+          username: "qhyqhy",
+          password: "123456",
+        })
+        .expect(200)
+        .end((err, res) => {
+          console.log(res.body.msg);
+          expect(res.body.msg).to.equal("Please enter correct format password.");
+        });
+    });
+
+  });
+
+})
+//   describe("Users endpoint /Watchlist", () => {
+//     before(() => {
+//       mongoose.connect(process.env.mongoDB, {
+//         useNewUrlParser: true,
+//         useUnifiedTopology: true,
+//       });
+//       db = mongoose.connection;
+//     });
+
+//     beforeEach(async () => {
+//       try {
+//         // api = require("../../../../index");
+//         await User.deleteMany({});
+//         await User.collection.insertMany(users);
+//       } catch (err) {
+//         console.error(`failed to Load user Data: ${err}`);
+//       }
+//     });
+//     describe("GET /users/username/watchlists ", () => {
+//       it("should return the  favourites movies and a status 201", () => {
+//         request(api)
+
+//           .get(`/api/users/user1/watchlists`)
+//           .set("Accept", "application/json")
+//           .expect("Content-Type", /json/)
+//           .expect(201)
+//           .end((err, res) => {
+//             expect(res.body).to.be.a("array");
+//             expect(res.body.length).to.equal(0);
+//           });
+//       });
+//     })
+//     describe("POST /users/username/watchlists ", () => {
+//       it("should the vaild movie id and a status 201", () => {
+//         request(api)
+//           .post(`/api/users/user1/watchlists`)
+//           .send({
+//             id: "635302"
+//           })
+//           .expect(201);
+//       });
+
+//       it("should return wrong movie id and a status 401 ", () => {
+//         request(api)
+//           .post(`/api/users/user1/watchlists`)
+//           .send({
+//             id: "123456",
+//           });
+//         request(api)
+//           .post(`/api/users/user1/watchlists`)
+//           .send({
+//             id: "123456",
+//           })
+//           .expect(401);
+//       });
+//     })
+//   });
+// });
