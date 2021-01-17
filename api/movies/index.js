@@ -8,10 +8,17 @@ router.get('/', (req, res, next) => {
   movieModel.find().then(movies => res.status(200).send(movies)).catch(next);
 });
 
-router.get('/:id', (req, res, next) => {
+router.get('/:id', async (req, res, next)=>{
   const id = parseInt(req.params.id);
-  movieModel.findByMovieDBId(id).then(movie => res.status(200).send(movie)).catch(next);
+  const movie = await movieModel.findByMovieDBId(id);
+  if(movie){
+  movieModel.findByMovieDBId(id).then(movie =>res.status(200).send(movie))
+  .catch(next);
+  }else{
+    res.status(404).send({message: `Unable to find movie with id: ${id}.`, status: 404});
+  }
 });
+
 
 // router.get('/:id', (req, res, next) => {
 //   const id = parseInt(req.params.id);
@@ -31,15 +38,15 @@ router.get('/:id', (req, res, next) => {
 router.get('/:id/reviews', (req, res, next) => {
   const id = parseInt(req.params.id);
   movieModel.findByMovieDBId(id)
-  .then(movie => res.status(201).json(movie.reviews))
-  .catch((error) => next(error));
+    .then(movie => res.status(201).json(movie.reviews))
+    .catch((error) => next(error));
 });
 
 router.get('/:id/similar', (req, res, next) => {
   const id = parseInt(req.params.id);
   getSimilarMovies(id)
-  .then(similarMovies => res.status(200).send(similarMovies))
-  .catch((error)=> next(error));
+    .then(similarMovies => res.status(200).send(similarMovies))
+    .catch((error) => next(error));
 });
 
 
@@ -51,8 +58,8 @@ router.post('/', async (req, res, next) => {
     await movieModel.create(newMovie).catch(next);
     res.status(201).send(newMovie);
   } else {
-    res.status(405).send({
-      message: "Invalid Movie Data",
+    res.status(404).send({
+      message: "Uanable to find movie",
       status: 405
     });
   }
@@ -78,13 +85,13 @@ router.post('/', async (req, res, next) => {
 // });
 
 
-router.delete('/:id', async (req,res, next)=>{
+router.delete('/:id', async (req, res, next) => {
   const id = parseInt(req.params.id);
   const movie = await movieModel.findByMovieDBId(id);
-  if(movie){
-  movieModel.deleteOne({id: id}).then(res.status(200).send("delete successfully"))
-  .catch(next);
-  } else{
+  if (movie) {
+    movieModel.deleteOne({ id: id }).then(res.status(200).send("delete successfully"))
+      .catch(next);
+  } else {
     res.status(404).send("Not find the moive to delete");
   }
 });
