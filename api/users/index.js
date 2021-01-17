@@ -97,14 +97,14 @@ router.post('/:userName/favourites', async (req, res, next) => {
 });
 
 //Get Movie Watchlists
-router.get('/:userName/watchlist', (req, res, next) => {
+router.get('/:userName/watchlists', (req, res, next) => {
   const userName = req.params.userName;
   User.findByUserName(userName).populate('watchlist').then(
     user => res.status(201).json(user.watchlist)
   ).catch(next);
 });
 //Add Movie to Watchlists
-router.post('/:userName/favourites', async (req, res, next) => {
+router.post('/:userName/watchlists', async (req, res, next) => {
   try{
     const newWatchList = req.body.id;
     const userName = req.params.userName;

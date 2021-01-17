@@ -1,3 +1,199 @@
+# Assignment 2 - Web API.
+
+Name: Huayu Qin
+
+## Features.
+
+
+
+ + Feature 1 - Add more than five APIs: new Actor, ActorDetails, Upcoming, toprated API, movieCredits, including a parameterised URL.
+ + Feature 2 -  Mongo integration. Storing API data  information in database.
+
+ + Feature 3 -  Coherent API design and modelling supporting full manipulation of resources.
+ + Feature 4 -  Using Nested Document for movie-reviews to associated users and user reviews and update object referencing to support the favourite movies function.
+ + Feature 5 - Using Mongoose to perform custom validation for token.
+ + Feature 6 -  Basic Authentication and protected routes for movie API.
+ + Feature 7 - Use express middleware to take Error handing in the router.
+ + Feature 8 - React integration. 
+ + Feature 9 - Custom API Documentations with Swagger.
+ + Feature 10 - User can create a list to store movies.
+ + Feature 11 - Authentic user can add movie to the watchlist  
+ + Feature 12 - Authentic user can see the details of movies in the watchlist. 
+ + Feature 13 - Authentic user can not add the same movie to the watchlist twice.
+ + Feature 14 - User can get the reviews of the specific movie.
+ + Feature 15 - User can check the similar movies via the specific movie
+ + Feature 16 - User can add a movie with a random ID in database.
+ + Feature 17 - User can delete  the specific movie store in database
+ + Feature 18 - User can get the upcoming, toprated movies and details.
+ + Feature 19 - User can get the popular actors with personal details.
+ + Feature 20 - customized password validation for register.
+
+## Installation Requirements
+
+Describe what needs to be on the machine to run the API (Node v?, NPM, MongoDB instance, any other 3rd party software not in the package.json). 
+
+Describe getting/installing the software, perhaps:
+
+```bat
+git clone https://github.com/Huayu-Qin/wad_api_assignment2.git
+```
+
+followed by installation
+
+```bat
+git install
+```
+
+then follow below
+
+```bat
+npm install
+```
+
+```bat
+npm start
+```
+
+and configure swagger 
+
+```bat
+npm install swagger-UI
+```
+
+```
+git install swagger-ui express
+```
+
+```
+git install swagger-jsdocs
+```
+
+
+
+## API Configuration
+
+configuration that needs to take place before running the API. 
+
+`.env`file
+
+```javascript
+NODE_ENV=development
+PORT=8080
+HOST=localhost
+TMDB_KEY=mytmdbkey
+mongoDB=mongodb+srv://admin:mypassword@cluster0.sjydx.mongodb.net/databasename?retryWrites=true&w=majority
+SEED_DB=true
+SECRET=JWTToken
+```
+
+## API Design
+
+overview of my web API design: 
+
+|              Name               |                  GET                   |                POST                 |      PUT      |               DELETE               |
+| :-----------------------------: | :------------------------------------: | :---------------------------------: | :-----------: | :--------------------------------: |
+|           /api/movies           |          Get a list of movies          |                 N/A                 |      N/A      |                N/A                 |
+|      /api/movies/{movieid}      |          Get a specific movie          |           Update a movie            |      N/A      |      Delete a specific movie       |
+|  /api/movies/{movieid}/reviews  |          Get reviews of movie          |         Upload a new review         |      N/A      |                N/A                 |
+|  /api/movies/{movieid}/similar  |  Get similar movies of specific movie  |                 N/A                 |      N/A      |                N/A                 |
+|           /api/users            |          Get a list of users           |   Register or authenticate a user   |      N/A      |                N/A                 |
+|       /api/users/{userid}       |                  N/A                   |                 N/A                 | Update a user |                N/A                 |
+| /api/user/{username}/favourites |       Get favourite movies list        |      add a movie to favourites      |      N/A      |                N/A                 |
+| /api/user/{username}/watchlists |          Get movie watchlist           |      add a movie to watchlist       |      N/A      |                N/A                 |
+|           /api/actors           |      Get a list of popular actors      |     add a actor with random ID      |      N/A      |                N/A                 |
+|        /api/actorDetails        |     Get details of specific actor      |                 N/A                 |      N/A      |                N/A                 |
+|          /api/upcoming          |     Get a list of upcoming movies      |                 N/A                 |      N/A      |                N/A                 |
+|   /api/upcoming/{upcomingid}    |     Get a specific upcoming movie      | add a specific movie with random ID |      N/A      | Delete the specific upcoming movie |
+|          /api/topRated          | Get a list of specific toprated movies |                 N/A                 |      N/A      |                N/A                 |
+|   /api/toprated/{topratedid}    |     Get a specific toprated movie      |        add a specific movie         |      N/A      |                N/A                 |
+|               ...               |                  ...                   |                 ...                 |      ...      |                ...                 |
+
+Link of swagger: https://wad-api-production.herokuapp.com/#/Movies/get_api_movies
+
+Longer waiting time for data response because the remote server is slow to load
+
+local:http://localhost:8080/ Basic complete function of API
+
+
+## Security and Authentication
+Only authenticated users with correct information can access the protected route.
+
+- protected routes:
+
+  /api/movies
+
+  /api/upcoming
+
+- The password have the limit format in registerion
+
+## Integrating with React App
+
+Add below part in the bottom of the `package.json` in MoviesApp
+
+```javascript
+ "proxy": "http://localhost:8080"
+```
+
+change the way that the API is accessed in `tmdb-api.js`.
+
+~~~Javascript
+export const getMovies = () => {
+  return fetch(
+    `/api/movies`, {
+      headers: {
+        'Authorization': window.localStorage.getItem('token')
+      }, method: 'get',
+  }).then(res => res.json());
+};
+
+export const getUpcomingMovies = () => {
+  return fetch(
+    `/api/upcoming`, {
+      headers: {
+        'Authorization': window.localStorage.getItem('token')
+      }, method: 'get',
+  }).then(res => res.json());
+};
+
+export const getPeoples = () => {
+  return fetch(
+    `/api/actors`, {
+      headers: {
+        'Authorization': window.localStorage.getItem('token')
+      }, method: 'get',
+  }).then(res => res.json());
+};
+
+export const getPeople = id => {
+  return fetch(
+    `/api/actorDetails/${id}`, {
+      headers: {
+        'Authorization': window.localStorage.getItem('token')
+      }, method: 'get',
+  }).then(res => res.json());
+};
+
+export const getTopRatedMovies = () => {
+  return fetch(
+    `/api/topRated`, {
+      headers: {
+        'Authorization': window.localStorage.getItem('token')
+      }, method: 'get',
+  }).then(res => res.json());
+};
+~~~
+
+## Extra features
+
+- Web form.
+- Dynamic and interactive UI.
+
+## Independent learning.
+
+- swagger UI
+
+I build the swagger documentation in the heroku and it can also access from local. I use swagger.json to develop it.
+
 # Assignment 2 - Agile Software Practice.
 
 Name: Huayu Qin
