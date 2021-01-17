@@ -1,6 +1,6 @@
 import session from 'express-session';
 import passport from './authenticate';
-import {loadUsers, loadMovies, loadActors, loadUpcomingMovies} from './seedData';
+import {loadUsers, loadMovies, loadActors, loadUpcomingMovies, loadtopRated} from './seedData';
 import './db';
 import dotenv from 'dotenv';
 import express from 'express';
@@ -9,6 +9,7 @@ import genresRouter from './api/genres';
 import actorsRouter from './api/actors';
 import actorDetailsRouter from './api/actorDetails';
 import upcomingRouter from './api/upcoming'
+import topRatedRouter from './api/topRated'
 import bodyParser from 'body-parser';
 import usersRouter from './api/users';
 import loglevel from 'loglevel';
@@ -23,6 +24,7 @@ if (process.env.SEED_DB) {
   loadMovies();
   loadActors();
   loadUpcomingMovies();
+  loadtopRated();
 }
 
 const errHandler = (err, req, res, next) => {
@@ -58,6 +60,7 @@ app.use('/api/genres', genresRouter);
 app.use('/api/actors', actorsRouter);
 app.use('/api/actorDetails', actorDetailsRouter);
 app.use('/api/upcoming', upcomingRouter);
+app.use('/api/topRated', topRatedRouter);
 //Users router
 app.use('/api/users', usersRouter);
 app.use(errHandler);
