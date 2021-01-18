@@ -55,7 +55,7 @@ app.use(session({
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use(passport.initialize());
-app.use('/api/movies', passport.authenticate('jwt', {session: false}), moviesRouter);//passport.authenticate('jwt', {session: false}), 
+app.use('/api/movies', passport.authenticate('jwt', {session: false}), moviesRouter);
 app.use('/api/genres', genresRouter);
 app.use('/api/actors', actorsRouter);
 app.use('/api/actorDetails', actorDetailsRouter);
